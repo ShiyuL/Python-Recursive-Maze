@@ -2,6 +2,8 @@ from sys import *
 from graphics import *
 from random import *
 
+#Summary: This file create a random maze using recursion and stack in python and used the Dijkstra’s algorithm to 
+#find the shortest path from the starting point to the ending point including the keys along the way. 
 #The starting point is red, it can be in any coordinate.
 #The ending point is green and is always on the edge.
 #The key is yellow
@@ -136,7 +138,8 @@ class Maze:
 
 
     def Explore(self, x, y):
-        #use self.explore to go to the key from the starting point
+        
+#use self.explore to go to the key from the starting point
         endX = self.x3;
         endY = self.y3;
         self.ExploreHelper(x, y, endX, endY)
