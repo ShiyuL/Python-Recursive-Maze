@@ -73,38 +73,46 @@ class Maze:
             self.maze[i][self.N+1].visit()#Sets all North boarder cells to visited
 
 
-    def genMaze(self):#Generates the perfect maze
-        self.perfectMaze=MyStack()#Initiate class MyStack
-#        stack=self.perfectMaze.push(self.maze[1][1],self.perfectMaze)
+    def genMaze(self):
+    '''
+    This method generate the maze by starting with a N by N grid where each cell has four walls intact. Starting from the lower
+    left cell which is the first cell with a coordinate of 1,1 and randomly choosing neighbors cells to recursively knock down 
+    the walls in-between the cells until none of the cells have its four walls intact. This is to make sure the maze is generated
+    differently every time, every cell is reachable from the starting point and there exist one or more path from the starting to
+    the ending point in the maze.
+    '''
+        self.perfectMaze=MyStack()#Initiate class MyStack to store cells in generating the maze
         totalCells=self.N*self.N#Sets the total number of sells to be NxN
-        x,y=1,1 #Sets the initial value of x and y to 1
-        #self.maze[1][1].checkVisit()#Change cell (1,1) to visited
-        visitedCells=1 #Initiate the number of visited cells to 1
-        currentCell=self.maze[1][1] #Sets current cell to (1,1)
+        x,y=1,1 #Sets the initial value of x and y to 1 to identify coordinates for each cell but starting with the first cell on the lower left corner.
+        visitedCells=1 #Initiate the number of visited cells to 1 because generating the maze starts in the lower left corner
+        currentCell=self.maze[1][1] #Sets current cell to (1,1) to start in the lower left corner of the maze
 
-        while visitedCells<totalCells:#Loops if the number of visited cells are smaller than the number of total cells
-            #print("old",x,y)
-            intact=[]#Initiate the list for the number of intact neighbors
-            neighbors=[(x,y+1),(x+1,y),(x,y-1),(x-1,y)]#Four possible neighbors of the cell
-            for neighbor in neighbors:#Checks each neighbor to see if they satisfy conditions
-                if neighbor[0]>0 and neighbor[1]>0:#Make sure the coordinate of the neighbor is inside the maze
-#                    print(neighbor[0],neighbor[1])
-                    if neighbor[0]<=self.N and neighbor[1]<=self.N:#Make sure the coordinate of the neighbor is inside the maze
-                        a,b=neighbor#Gets the x,y coordinates of the neighbor
+        #Continuously build the maze by knocking down walls of cells through recursion until every cell in the maze is visited
+        while visitedCells<totalCells:#Loops if the number of visited cells are smaller than the number of total cells in the maze
+            intact=[]#Initiate the list to keep track of the the number of intact neighbors of each cell
+            neighbors=[(x,y+1),(x+1,y),(x,y-1),(x-1,y)]#Four possible neighbors of the cell on the north, east, west and south sides.
+            #For each cell, check all its four neibours to see if the neighbors are inside boarder of the maze
+            for neighbor in neighbors:#for each of the four neighbors 
+                if neighbor[0]>0 and neighbor[1]>0:#Make sure the coordinate of its neighbors are inside the minimum boarders of the maze
+                    if neighbor[0]<=self.N and neighbor[1]<=self.N:#Make sure the coordinate of its neighbor is inside the maximum boarder of the maze
+                        a,b=neighbor#a,b: the x,y coordinates of the neighbor
+                        #If the neighbor has all four walls intact, add the neighbor to the intact list
                         if self.maze[a][b].checkNorth() and self.maze[a][b].checkSouth() and self.maze[a][b].checkWest() and self.maze[a][b].checkEast():#Checks if all walls are intact
                             intact.append(neighbor)#Add the qualified neighbor cells which has all its walls intact to the list
-            #print(intact)
+            #As long as there are one or more neighbors of the cell with all its walls intact, the construction of the maze continues which means
+            #A random neighbor is choosen and one of its walls will be randomly knocked down.
             if len(intact)>0:#If there are one or more neighbors with all its walls intact
-                randomNeighbor=randrange(0,len(intact))#Choose a random neighbor
-                c,d=intact[randomNeighbor]#Get the x and y coordinate of the random neighbor
-                newCell=self.maze[c][d]#Sets the random neighbor to the cell that will be explored
+                randomNeighbor=randrange(0,len(intact))#Choose a random neighbor from the intact list
+                c,d=intact[randomNeighbor]#c,d: The x and y coordinate of the random neighbor
+                newCell=self.maze[c][d]#newCell: The random neighbor becomes the new cell that will be visited to look at its neighbors cell next
+                #Knocks down the wall between the current cell and its random neighbor chosen
                 if ((intact[randomNeighbor][0]-x)==0) and ((intact[randomNeighbor][1]-y)==1):#If the neighbor is above the current cell
                     currentCell.visitNorth()#Knock down the north wall of the current cell
                     newCell.visitSouth()#Knowck down the south wall of the neighbor cell
                     y+=1#Change the y coordinate so that the x,y coordinates are coordinates of the neighbor
                 if ((intact[randomNeighbor][0]-x)==1) and ((intact[randomNeighbor][1]-y)==0):#If the neighbor is on the right of the current cell
                     currentCell.visitEast()#Knock down the east wall of the current cell
-                    newCell.visitWest()#Knowck down the west wall of the neighbor cell
+                    newCell.visitWest()#Knock down the west wall of the neighbor cell
                     x+=1#Change the x coordinate so that the x,y coordinates are coordinates of the neighbor
                 if ((intact[randomNeighbor][0]-x)==0) and ((intact[randomNeighbor][1]-y)==-1):#If the neighbor is on the bottom of the current cell
                     currentCell.visitSouth()#Knock down the south wall of the current cell
@@ -114,23 +122,22 @@ class Maze:
                     currentCell.visitWest()#Knock down the west wall of the current cell
                     newCell.visitEast()#Knowck down the east wall of the neighbor cell
                     x-=1#Change the x coordinate so that the x,y coordinates are coordinates of the neighbor
-                #print("new",x,y)
-                newCell=self.maze[x][y]#Sets new cell
-                #self.maze[x][y].checkVisit()
-                self.perfectMaze.push((x,y),self.stack1)#Push the coordinate of the current cell into the stack
-                #print("size of stack",perfectMaze.size([]))
-                #print(currentCell.checkNorth(),currentCell.checkWest(),currentCell.checkEast(),currentCell.checkSouth())
-                #print(newCell.checkNorth(),newCell.checkWest(),newCell.checkEast(),newCell.checkSouth())
-                currentCell=newCell#Sets current cell to new cell
+                newCell=self.maze[x][y]#newCell: The random neighbor becomes the new cell that will be visited to check its neighbors for intact walls
+                self.perfectMaze.push((x,y),self.stack1)#Push the coordinate of the current cell into the stack in case a deadend is
+                #reached where none of the neighbors of the cell has all its four walls intact. The stack will help the path 
+                #back track until a cell is found to have one or more neighbor which have all its walls intact through recursion.
+                currentCell=newCell#Sets current cell to new cell to visit the new cell
                 visitedCells+=1#Increase the number of visited cell by 1
+            #If the current cell do not have any neighbors with all its four walls intact, revisit the previous cell to check its
+            #neighbors for intact wall and do so until a neighbor is found with all its walls intact
             else:
-                #print("check if stack is empty",perfectMaze.isEmpty([]))#Check if stack is empty
-                newCell = self.stack1[0]#Pop out the previous coordinates from the stack as a tuple
-                self.stack1 = self.stack1[1:len(self.stack1)]
+                newCell = self.stack1[0]#Set the new cell to the coordinate of the previous cell visited
+                self.stack1 = self.stack1[1:len(self.stack1)]#Shorten the stack by one cell because of the backup
                 x=newCell[0]#Get the x coordinate of the previous cell
                 y=newCell[1]#Get the y coordinate of the previous cell
-                newCell=self.maze[x][y]#the old cell becomes the new cell
-                currentCell=newCell#the new cell becomes the current cell
+                newCell=self.maze[x][y]#Set the coordinate of the new cell to the previously visited cell
+                currentCell=newCell#Set the previously visited cell as the current cell to backup
+                
     def isSolved(self,x,y, endX, endY):#Check to see if the current position equals to the end position
         if x==endX and y==endY:
             return True
