@@ -297,12 +297,19 @@ class Maze:
         return self.x1,self.y1 #Return the coordinate of the starting point for the Explore(self, x,y) method to use when finding the shortest path
 
     def drawDot(self,x,y,r,c):
+        '''
+        This method draws a dot with a radius and color that used to represent the starting point, the key, the ending point
+        and the path which starts from the starting point crossing the key and ending in the ending point
+        x and y is the coordiante of the dot to be drawn in the maze
+        r is the radius of the dot
+        c is the color of the dot
+        '''
         #Draw a point given coordinate on grid and radius and color
-        coord=Point(20*x,20*(self.N+1)-20*y)#Sets the position of the point
-        circle = (Circle(coord,r))
-        circle.setOutline(c)#Set color of point
-        circle.setFill(c)#Set color of the point
-        circle.draw(self.win)#Draw the point
+        coord=Point(20*x,20*(self.N+1)-20*y)#Sets the position of the point to be in the middle of the cell
+        circle = (Circle(coord,r))#draws the circle to represent the dot
+        circle.setOutline(c)#Set color for the outline of the dot
+        circle.setFill(c)#Set color to fill the dot
+        circle.draw(self.win)#Draw the point on the window with the maze
 
 
 class Cell:
