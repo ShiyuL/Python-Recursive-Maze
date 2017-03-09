@@ -2,7 +2,7 @@ from sys import *
 from graphics import *
 from random import *
 
-#Summary: This file create a random maze using recursion and stack in python and used the Dijkstra’s algorithm to 
+#Summary: This program create a random maze using recursion and stack in python and used the Dijkstra’s algorithm to 
 #find the shortest path from the starting point to the ending point including the keys along the way. 
 #The starting point is red, it can be in any coordinate.
 #The ending point is green and is always on the edge.
@@ -301,15 +301,19 @@ def getInput():#Get user input for dimensions of the maze
         N=eval(input("Please enter the dimension 'N' for the NxN maze:"))
     return N
 
-def main():#Initialize maze
-    N=getInput()#Get user input for dimension
-    output=Maze(N)#Initialize maze
-    output.genMaze()#Generate maze
-    x=output.Draw()#Draw maze and return coordinate of the starting point
-    a=x[0]#The x coordinate of the starting point
-    b=x[1]#The y coordinate of the starting point
-    output.Explore(a,b)#Initialize explore
-    output.win.getMouse()#Wait for user mouse input
-    output.win.close()#Close window
+def main():
+    """This program create a random maze using recursion and stack in python and used the Dijkstra’s algorithm to quickly 
+    find the shortest path from the starting point to the ending point including the keys along the way. The program
+    first receives an input from the user for the dimension, then initializes and generate a N by N maze, draws out
+    the maze with a starting point, then discovers and marks the shortest path through the maze."""
+    N=getInput()#Get user input for dimension of N by N maze, the maze will be a square matrix with side length of N
+    output=Maze(N)#Initialize the maze with user specified dimensions of N by N
+    output.genMaze()#Generate maze with user specified dimensions
+    x=output.Draw()#Draw maze and return x which is the coordinates of the starting point
+    a=x[0]#a is the x coordinate of the starting point x
+    b=x[1]#a is the y coordinate of the starting point x
+    output.Explore(a,b)#Expolore the shortest path in the maze from the starting to the finishing point
+    output.win.getMouse()#Wait for user mouse input to draw the shortest path
+    output.win.close()#Close window after the enitre shortest path is displayed on screen
 
 main()
