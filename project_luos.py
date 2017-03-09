@@ -11,12 +11,8 @@ from random import *
 
 class MyStack:
 '''Create a class Stack that implements the regular operations of a stack. It is used for both building the maze and exploring
-for the shortest path in the maze. In the case of building the maze, the cells in the maze that originally all have intact
-walls are pushed onto the stack and a wall between the current cell and a neighbor is randomly taken down to create different
-paths. If the cell is at the boarder or have no neighbors with intact walls then cells are poped off the stack to back up
-until another neighbor is available with intact walls. In the case for exploring the shortest path, every cell along the
-path is kept track of until the path hits a deadend, at that point cells are poped off which menas the path backs up until
-there is another path available and the stack also makes sure any visited paths will not be visited again'''
+for the shortest path in the maze because both requires recursion to keep track of the cells visited and to back-track to 
+previously visited cells when a deadend is reached'''
     def __init__(self):
         #Initiate empty list to store the cells
         pass #no action has to be performed
@@ -42,25 +38,39 @@ there is another path available and the stack also makes sure any visited paths 
 
 
 class Maze:
-    def __init__(self,N):#Initialize the maze to be a N+2 by N+2 maze to avoid tedious special cases
+    '''
+    The class Maze generates a maze and build the shortest path in the maze. In the case of building the maze, the cells in
+    the maze that originally all have intact walls are pushed onto the stack and a wall between the current cell and a 
+    neighbor is randomly taken down to create different paths. If the cell is at the boarder or have no neighbors with intact 
+    walls then cells are poped off the stack to back up until another neighbor is available with intact walls. In the case for 
+    exploring the shortest path, every cell along the path is kept track of until the path hits a deadend, at that point cells
+    are poped off which means the path backs up until there is another path available and the stack also makes sure any visited
+    paths will not be visited again. The shortest path will also include a key which must be pickted up to finish the maze.
+    The generated maze is a N+2 by N+2 maze so that each side of the maze has an invisible boarder made up by cells to avoid 
+    tedious special cases with boarderline cells.
+    '''
+    def __init__(self,N):
+        #N is the dimension of the maze. This method initialize the maze to be a N+2 by N+2 maze where each side has 
+        #an invisible boarder to cells to avoid tedious special cases addressing cells on the boarder
         self.N=N#Initiate the dimension of the maze to itself
         self.maze=[[i for i in range(N+2)]for i in range(N+2)]#Initiate the maze to N+2 by N+2 to avoid tedious special cases
-        self.stack1=[]
-        self.stack2=[]
-        self.pathToVictory = []
-        self.win = GraphWin('Maze', 900, 700)#Defines the size of the window
-        self.x1,self.y1=0,0
-        self.x2,self.y2=0,0
-        self.solved = False
-        self.trace = []
-        for i in range(0,self.N+2):#Generate the x coordinates of the cells
-            for j in range(0,self.N+2):#Generate the y coordinates of the cells
-                self.maze[i][j]=Cell()#For each cell, initiate class Cell
-        for i in range(0,self.N+2):#Sets all border cells to visited
-            self.maze[0][i].visit()
-            self.maze[i][0].visit()
-            self.maze[self.N+1][i].visit()
-            self.maze[i][self.N+1].visit()
+        self.stack1=[]#Initiate the stack to store visited cells in the recursion to generate the maze
+        self.stack2=[]#Initiate the stack to store visited cells in the recursion in Dijkstra's algorithm to search for the shortest path.
+        self.pathToVictory = []#pathToVictory: initiate the list to store the shortest path(consisting of coordinates of cells)
+        self.win = GraphWin('Maze', 900, 700)#Defines the size of the window where the maze would be drawn
+        self.x1,self.y1=0,0#x1,y1: Initiate the x and y coordinates of the starting point which will be randomly generated
+        self.x2,self.y2=0,0#x2,y2: Initiate the x and y coordinates of the ending point which will be randomly generated 
+        self.solved = False#Initiate the maze as unsolved. The maze is not solved until a shortest path connects the starting and ending points.
+        #Generate the predefined x and y coordinates for the cells in the maze
+        for i in range(0,self.N+2):#for i in 1 .. maze size without the boarder
+            for j in range(0,self.N+2):#for j in 1 .. maze size without the boarder
+                self.maze[i][j]=Cell()#For each cell, initiate class Cell with its x and y coordinates
+        #Sets all boarder cells to visited to avoid tedious special cases where a cell is on the boarder
+        for i in range(0,self.N+2):#for i in 1 .. maze size without the boarder
+            self.maze[0][i].visit()#Set all the West boarder cells to visited
+            self.maze[i][0].visit()#Sets all South boarder cells to visited
+            self.maze[self.N+1][i].visit()#Sets all East boarder cells to visited
+            self.maze[i][self.N+1].visit()#Sets all North boarder cells to visited
 
 
     def genMaze(self):#Generates the perfect maze
