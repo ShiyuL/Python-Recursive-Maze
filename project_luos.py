@@ -294,12 +294,20 @@ class Cell:
     def unVisit(self):
         self.visited=False
 
-def getInput():#Get user input for dimensions of the maze
+def getInput():
+    '''Get user input for dimensions of the maze which will be N by N. The user gets to decide the size of the maze. 
+    However, because the program is written in recursion it is generally very slow to generate maze over the size 
+    of 20 by 20. The maze will also be generated with an actual size of N+2 by N+2 to have an invisible boarder
+    in order to simplify the calculation for the neighbors and the shortest path in the maze'''
     if len(argv)>1 and isinstance(eval(argv[1]),int):
-        N=eval(argv[1])
+    #Only if the user enters the appropriate dimension (maze is greaters than 1 by 1) and the user input is an integer, the
+    #dimension N will be saved and returned in the function
+        N=eval(argv[1])#Stores the N dimension of the maze inside N
     else:
-        N=eval(input("Please enter the dimension 'N' for the NxN maze:"))
-    return N
+    #If user input is incorrect or is being asked for the first time, repeated ask for user input for a dimension N
+    #until user input is correct.
+        N=eval(input("Please enter the dimension 'N' for the NxN maze:"))#Asks for user input for a dimension N
+    return N #Returns the dimension of the maze
 
 def main():
     """This program create a random maze using recursion and stack in python and used the Dijkstra’s algorithm to quickly 
