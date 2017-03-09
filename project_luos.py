@@ -10,24 +10,35 @@ from random import *
 #Inorder to show the pathway clearly, the brown pathway is from the starting point to the key and the black pathway is from the key to the ending point 
 
 class MyStack:
-#A stack that implements the push and pop operations
-    def __init__(self):#Initiate empty list
-        pass
+'''Create a class Stack that implements the regular operations of a stack. It is used for both building the maze and exploring
+for the shortest path in the maze. In the case of building the maze, the cells in the maze that originally all have intact
+walls are pushed onto the stack and a wall between the current cell and a neighbor is randomly taken down to create different
+paths. If the cell is at the boarder or have no neighbors with intact walls then cells are poped off the stack to back up
+until another neighbor is available with intact walls. In the case for exploring the shortest path, every cell along the
+path is kept track of until the path hits a deadend, at that point cells are poped off which menas the path backs up until
+there is another path available and the stack also makes sure any visited paths will not be visited again'''
+    def __init__(self):
+        #Initiate empty list to store the cells
+        pass #no action has to be performed
 
-    def push(self,item,S):#Push an item to the top of the stack
-        S.append(item)
+    def push(self,item,S):
+        #Push an item which is the cell to the top of the stack S
+        S.append(item)#Adds the cell to the top of the stack
 
-    def isEmpty(self,S):#returns True if there are no elements in S, otherwise return False
-        return len(S)==0
+    def isEmpty(self,S):
+        #Gives the status or whether there are any cells in the stack S
+        return len(S)==0#returns true if there are not cells stored in the stack and false if there are cells stored in the stack
 
-    def pop(self,S):#Pop the top item
-        if len(S) == 0:
-            pass
-        else:
-            return S.pop()
+    def pop(self,S):
+        #Returns the most current cells stored in stack S and also cover the condition when there are no cells on the stack
+        if len(S) == 0:#If there are no cells stored in the stack
+            pass#Performs no action
+        else:#If there are cells stored in the stack S
+            return S.pop()#Returns the most recent cell from the stack and shortens the stack by one cell
 
-    def size(self,S):#returns the number of elements in S
-        return len(S)
+    def size(self,S):
+        #Gives the number of cells stored in stack S
+        return len(S)#returns the number of cells stored in stack S
 
 
 class Maze:
