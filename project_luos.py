@@ -138,9 +138,13 @@ class Maze:
                 newCell=self.maze[x][y]#Set the coordinate of the new cell to the previously visited cell
                 currentCell=newCell#Set the previously visited cell as the current cell to backup
                 
-    def isSolved(self,x,y, endX, endY):#Check to see if the current position equals to the end position
-        if x==endX and y==endY:
-            return True
+    def isSolved(self,x,y, endX, endY):
+    '''Check to see if the current position equals to the end position to see if the maze is solved, this is when a path starting
+    from the start point has reached the position of the end point.
+    x and y and the coordinates of the last cell on the path and endX and endY are the coordinates of the ending point.
+    '''
+        if x==endX and y==endY:#If the coordinate of the current cell on the path is equal to the coordinate of the end point
+            return True#maze is solved and the shortest path is found from the starting point to the ending point
 
     def ExploreHelper(self, x, y, endX, endY):
         currentCell=self.maze[x][y]#Set current cell
