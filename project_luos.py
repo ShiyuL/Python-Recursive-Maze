@@ -147,31 +147,44 @@ class Maze:
             return True#maze is solved and the shortest path is found from the starting point to the ending point
 
     def ExploreHelper(self, x, y, endX, endY):
-        currentCell=self.maze[x][y]#Set current cell
-        self.path=MyStack()#Initiate stack
+        '''
+        This method implements Dijistra's algorithm to generate the shortest path between two points efficiently and fast
+        without using up too much memory
+        x,y: are the coordinate of the starting point
+        endX, endU: are the coordinates of the ending point
+        '''
+        currentCell=self.maze[x][y]#Set current cell as the coordinate of the starting point
+        self.path=MyStack()#Initiate stack class to store the path 
         currentCell.visit()#Set current cell as visited
-        self.path.push((x,y),self.stack2)#Add the position of the current cell onto the stack
+        self.path.push((x,y),self.stack2)#Add the coordinate of the current cell onto the stack as the first point int he path
 
-        if self.isSolved(x,y, endX, endY):#Check if current position is equal to the end position
-            return
+        #Check to see if the starting and ending point do not overlap
+        if self.isSolved(x,y, endX, endY):#Check if current position is equal to the end position to see if the shortest path has already been found
+            return #performs no action and returns control to the Explore method, this means the shortest path is found
+        #Visit the north neighbor of the current cell if possible
         if not currentCell.checkNorth() and not self.maze[x][y+1].isVisited():#if the north has no wall, and is not visited
-            self.ExploreHelper(x,y+1, endX, endY)
+            self.ExploreHelper(x,y+1, endX, endY)#visit the north neighbor
+        #If the north neighbor cannot be visited, try visiting the east neighbor of the current cell   
         elif not currentCell.checkEast() and not self.maze[x+1][y].isVisited():#if the east has no wall, and is not visited
-            self.ExploreHelper(x+1,y, endX, endY)
+            self.ExploreHelper(x+1,y, endX, endY)#visit the east neighbor
+        #If the north and east neighbors cannot be visited, try visiting the south neighbor of the current cell   
         elif not currentCell.checkSouth() and not self.maze[x][y-1].isVisited():#if the south has no wall, and is not visited
-            self.ExploreHelper(x,y-1, endX, endY)
+            self.ExploreHelper(x,y-1, endX, endY)#visit the south neighbor
+        #If the north, east and south neighbors cannot be visited, try visiting the west neighbor of the current cell   
         elif not currentCell.checkWest() and not self.maze[x-1][y].isVisited():#if the west has no wall, and is not visited
-            self.ExploreHelper(x-1,y, endX, endY)
-        else:#If dead end, return to the previous cell
-            old = self.path.pop(self.stack2)#Return current position
-            old = self.path.pop(self.stack2)#Return previous step
+            self.ExploreHelper(x-1,y, endX, endY)#Visit the west neighbor
+        #If none of the neighbors can be visited or dead end, return to the previous cell
+        else:
+            old = self.path.pop(self.stack2)#Return current coordinate
+            old = self.path.pop(self.stack2)#Return the coordinate of the previous cell
+            #If at the end of the maze and the ending point is also at the end, calling ExploreHelper will result in the maze been solved
             if old!=None:
-                self.ExploreHelper(old[0],old[1], endX, endY)#If at the end of the maze and the ending point is also at the end
+                self.ExploreHelper(old[0],old[1], endX, endY)#Call the ExploreHelper again with the same two coordinates
 
 
     def Explore(self, x, y):
         '''
-        This method uses Dijkstra’s algorithm  to generate the shortest path from the starting point to the key 
+        This method uses Dijkstra’s algorithm in ExploreHelper to generate the shortest path from the starting point to the key 
         then finally to the ending point through the randomly generated maze to make sure the path is generated efficiently
         and quickly without using up too much memory
         x and y are the coordinates of the starting point
