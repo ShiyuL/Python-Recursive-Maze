@@ -313,35 +313,62 @@ class Maze:
 
 
 class Cell:
-    def __init__(self):#Initiate the boolean value of the walls
-        self.north=True
-        self.south=True
-        self.east=True
-        self.west=True
-        self.visited=False
-
-    def visit(self):#Change the cell to visited
-        self.visited=True
-    def visitNorth(self):#Knock down the north wall
-        self.north=False
-    def visitEast(self):#Knock down the east wall
-        self.east=False
-    def visitWest(self):#Knock down the west wall
-        self.west=False
-    def visitSouth(self):#Knock down the south wall
-        self.south=False
-    def checkNorth(self):#Check to see if the north wall is still intact
-        return self.north
-    def checkSouth(self):#Check to see if the south wall is still intact
-        return self.south
-    def checkEast(self):#Check to see if the east wall is still intact
-        return self.east
-    def checkWest(self):#Check to see if the west wall is still intact
-        return self.west
-    def isVisited(self):#Check to see if the cell has been visited
-        return self.visited
+    '''
+    This class initiate the cells within the maze with its walls and status of the walls to indicate if the walls are still
+    intact. It also has methods to set the cell to visited or unvisited and  gives the status of the cell to indicate if 
+    the cell has been visited 
+    '''
+    
+    #Initiate the four walls to be intact and the cell to be not visited
+    def __init__(self):
+        self.north=True#Set the north wall to intact
+        self.south=True#Set the south wall to intact
+        self.east=True#Set the east wall to intact
+        self.west=True#Set the west wall to intact
+        self.visited=False#Set the cell to not visited
+    
+    #Change the cell to visited
+    def visit(self):
+        self.visited=True #Set visited to True
+        
+    #Knock down the north wall     
+    def visitNorth(self):
+        self.north=False #Set status of the north wall to False (not intact)
+    #Knock down the east wall    
+    def visitEast(self):
+        self.east=False#Set status of the east wall to False (not intact)
+        
+    #Knock down the west wall    
+    def visitWest(self):
+        self.west=False#Set status of the west wall to False (not intact)
+    
+    #Knock down the south wall
+    def visitSouth(self):
+        self.south=False#Set status of the south wall to False (not intact)
+    
+    #Check to see if the north wall is still intact
+    def checkNorth(self):
+        return self.north#Return the status of the north wall
+    
+    #Check to see if the south wall is still intact
+    def checkSouth(self):
+        return self.south#Return the status of the south wall
+    
+    #Check to see if the east wall is still intact
+    def checkEast(self):
+        return self.east#Return the status of the east wall
+    
+    #Check to see if the west wall is still intact
+    def checkWest(self):
+        return self.west#Return the status of the west wall
+    
+    #Check to see if the cell has been visited
+    def isVisited(self):
+        return self.visited#Return the status of whether the cell is visited
+    
+    #Set the cell to unvisited
     def unVisit(self):
-        self.visited=False
+        self.visited=False#Changed the visited status of the cell to False
 
 def getInput():
     '''Get user input for dimensions of the maze which will be N by N. The user gets to decide the size of the maze. 
