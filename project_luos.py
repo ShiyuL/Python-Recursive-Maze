@@ -200,91 +200,101 @@ class Maze:
 
 
     def Draw(self):
-        #This method draws the maze
+        '''This method draws original generated random maze with all the boarder and all the cells in the maze showing
+        which of the walls are intact. A red dot indicates the starting point, a yellow dot indicates the key and a
+        green dot indicates the ending point.
+        '''
         self.win.setBackground("white")#Set background to white
         self.x1,self.y1=randint(1,self.N),randint(1,self.N)#Generate random coordinates for the starting point
         self.x2,self.y2=randint(1,self.N),randint(1,self.N)#Generate random coordinates for the ending point
         self.x3,self.y3=randint(1,self.N),randint(1,self.N)#Generate random coordinates for the key
 
-        # ending point is always on the edge of the maze
-        while (self.x2!=1 and self.x2!=self.N) and (self.y2!=1 and self.y2!=self.N):#Check to see if the ending point in on the edge of the maze, if not then reshuffle
-            self.x2,self.y2=randint(1,self.N),randint(1,self.N)
-
-        while (self.x1==self.x2 and self.y1==self.y2) :#Check to seee that the coordinate of the starting point does not equal to the coordinate of the ending point
-            self.x1,self.y1=randint(1,self.N),randint(1,self.N)
-
-        while (self.x1==self.x3 and self.y1==self.y3) or (self.x2==self.x3 and self.y2==self.y3): #Check to see that key does not overlap with starting or ending point
-            self.x3,self.y3=randint(1,self.N),randint(1,self.N)
-
-        if self.y2==self.N:#If exit is on the top, knock down the northwall
-            if self.x2==self.N:#If the exit is on the top and most right, only knock down east wall
-                self.maze[self.x2][self.y2].visitEast()
-            elif self.x2==1:#If the exit is on the top and most left, only knock down west wall
-                self.maze[self.x2][self.y2].visitWest()
-            else:
-                self.maze[self.x2][self.y2].visitNorth()#If exit is on the top, knock down the north wall
-        elif self.y2==1:#If exit is on the bottom, knowck down the southwall
-            if self.x2==self.N:#If the exit is on the bottom and most right, only knock down east wall
-                self.maze[self.x2][self.y2].visitEast()
-            elif self.x2==1:#If the exit is on the bottom and most left, only knock down west wall
-                self.maze[self.x2][self.y2].visitWest()
-            else:#If exit is on the bottom, knock down the south wall
-                self.maze[self.x2][self.y2].visitSouth()
-        elif self.x2==self.N:#If exit is on the most right, knock down the east wall
-            if self.y2==self.N:#If the exit is on the top right, only the east wall is knocked down
-                self.maze[self.x2][self.y2].visitEast()
-            elif self.y2==1:#If the exit is on the bottom right most cell, knock down the east wall
-                self.maze[self.x2][self.y2].visitEast()
-            else:#Knock down the west wall
-                self.maze[self.x2][self.y2].visitEast()
-        elif self.x2==1:#If exit is on the most left, knock down the west wall
-            if self.y2==self.N:#If the exit is on the top left, only the west wall is knocked down
-                self.maze[self.x2][self.y2].visitWest()
-            elif self.y2==1:#If the exit is on the bottom left most cell, knock down the west wall
-                self.maze[self.x2][self.y2].visitWest()
-            else:#Knock down the west wall
-                self.maze[self.x2][self.y2].visitWest()
+        #Makes sure the ending point is always on the edge of the maze to make the maze completable, otherwise generate another ending point
+        while (self.x2!=1 and self.x2!=self.N) and (self.y2!=1 and self.y2!=self.N):#Check to see if the ending point in not on the edge of the maze
+            self.x2,self.y2=randint(1,self.N),randint(1,self.N)#Generate another coordinate for the ending point until the ending point is on the edge
+        #Makes sure the starting and ending points have different coordinates
+        while (self.x1==self.x2 and self.y1==self.y2) :#Check to see that the coordinate of the starting point is equal to the coordinate of the ending point
+            self.x1,self.y1=randint(1,self.N),randint(1,self.N)#Generate another coordinate for the starting point which does not have the same coordinate as the ending point
+        #Make sure the key do not have the same coordinates as the starting or ending points
+        while (self.x1==self.x3 and self.y1==self.y3) or (self.x2==self.x3 and self.y2==self.y3): #Check to see that key overlaps with starting or ending point
+            self.x3,self.y3=randint(1,self.N),randint(1,self.N)#Generate another coodinate for the key which does not overlap with the coordinate of the starting or ending point
+        
+        #If exit at the ending point is on the top, knock down the north wall and the east or west wall if the exit is on a corner
+        if self.y2==self.N:#If the exit is on the top
+            if self.x2==self.N:#If the exit is on the top and most right
+                self.maze[self.x2][self.y2].visitEast()#only knock down east wall
+            elif self.x2==1:#If the exit is on the top and most left
+                self.maze[self.x2][self.y2].visitWest()#only knock down west wall
+            else:#If the exis is on the top but not on a corner of the maze
+                self.maze[self.x2][self.y2].visitNorth()#Only knock down the north wall
+        #If exit at the ending point is on the bottom, knock down the south wall and the east or west wall if the exit is on a corner        
+        elif self.y2==1:#If the exit is on the bottom
+            if self.x2==self.N:#If the exit is on the bottom and most right
+                self.maze[self.x2][self.y2].visitEast()#only knock down east wall
+            elif self.x2==1:#If the exit is on the bottom and most left
+                self.maze[self.x2][self.y2].visitWest()#only knock down west wall
+            else:#If exit is on the bottom but is not on any corners
+                self.maze[self.x2][self.y2].visitSouth()#knock down the south wall
+        #If exit is on the most right, knock down the east wall only because the previous two cases would have checked and knocked down other walls
+        elif self.x2==self.N:#If the exit is on the right
+            if self.y2==self.N:#If the exit is on the top right
+                self.maze[self.x2][self.y2].visitEast()#The east wall is knocked down
+            elif self.y2==1:#If the exit is on the bottom right most cell
+                self.maze[self.x2][self.y2].visitEast()#knock down the east wall
+            else:#If the exit is on the most right but is not on any corners
+                self.maze[self.x2][self.y2].visitEast()##Knock down the east wall
+        #If exit is on the most left, knock down the west wall only because the previous two cases would have checked and knocked down other walls
+        elif self.x2==1:#If the exit in on the left
+            if self.y2==self.N:#If the exit is on the top lefe
+                self.maze[self.x2][self.y2].visitWest()#the west wall is knocked down
+            elif self.y2==1:#If the exit is on the bottom left most cell
+                self.maze[self.x2][self.y2].visitWest()#knock down the west wall
+            else:#If the exit in the left but not on any corners
+                self.maze[self.x2][self.y2].visitWest()#Knock down the west wall
         self.drawDot(self.x1,self.y1,8,"red")#Draw starting point
         self.drawDot(self.x2,self.y2,8,"green")#Draw ending point
         self.drawDot(self.x3,self.y3,8,"yellow")#Draw key
 
 
-        #Draws the North walls vertically column by column
-        x,y=10,self.N*20-10 #Sets initial values for x and y for the North walls
-        for i in range(1, self.N + 1):#Sets the number of columns
-            for j in range(1, self.N + 1):#Sets number of walls in each column
-                #print(i,j)
-                if self.maze[i][j].checkNorth():#Check if the North wall is standing. If true draw the north wall for the cell.
+        #Draws the North walls vertically column by column where each cell has a length of 20
+        x,y=10,self.N*20-10 #Sets initial values for x and y for the North walls for the first cell located at the top left corner
+        #For each column draw the north wall of the cells if the wall is still intact
+        for i in range(1, self.N + 1):#for i in 1 .. maze size with boarder
+            for j in range(1, self.N + 1):#for j in 1 .. maze wize with boarder
+                #Check if the North wall is intact. If true draw the north wall for the cell.
+                if self.maze[i][j].checkNorth():#Check if the north wall is intact
                     wall = (Line(Point(x, y), Point(x + 20, y))).draw(self.win)#Draws the north wall of one cell with a width of 20
-                x, y = x, y - 20 #Sets the position for the next wall in the row
-            x, y = x + 20, self.N*20-10 #Sets the position for the next column
+                x, y = x, y - 20 #Sets the position of the wall for the next wall in the row
+            x, y = x + 20, self.N*20-10 #Sets the position of the wall for the next column
 
         #Draws the West walls vertically column by column
-        x, y = 10, self.N*20+10 #Sets the initial x and y position for the West walls
-
-        for i in range(1, self.N + 1):#Sets the number of columns
-            for j in range(1, self.N + 1):#Sets number of walls in each column
-                #print(i,j)
-                if self.maze[i][j].checkWest():#Check if the West wall is standing. If true draw the north wall for the cell.
+        x, y = 10, self.N*20+10 #Sets the initial x and y position for the West walls for the first cell located at top left corner
+        #For each column draw the west wall of the cells if the wall is still intact        
+        for i in range(1, self.N + 1):#for i in 1 .. maze size with boarder
+            for j in range(1, self.N + 1):#for j in 1 .. maze size with boarder
+                #Check if the West wall is standing. If true draw the north wall for the cell.
+                if self.maze[i][j].checkWest():#Check if the north wall is intact
                     wall = (Line(Point(x, y), Point(x, y - 20))).draw(self.win)#Draws the West wall of one cell with a height of 20
                 x, y = x, y-20  #Sets the position of the wall in the next column
-            x, y = x+20, self.N*20+10 #Sets the position for the next row
+            x, y = x+20, self.N*20+10 #Sets the position of the wall for the next row
 
         #Draws one wall at the bottom of the maze to be the the South wall of the last row of cells
         x, y = 10, self.N*20+10 #Sets the initial x and y position for the South walls to start from bottom
-        for i in range(1, self.N + 1): #Sets the number of walls in the bottom row
+        #Draw the wall at the south boarder
+        for i in range(1, self.N + 1): #for i in 1 .. maze size with boarder
             if self.maze[i][1].checkSouth():#Check if the South wall is standing. If true draw the South wall for the last row
                 wall = (Line(Point(x, y), Point(x + 20, y))).draw(self.win)#Draws the South wall of one cell with the width of 20
             x, y = x + 20, y #Sets the position for the South wall of the next cell
 
         #Draws one wall at the right of the maze to the the East wall of the last column of cells
         x, y = self.N * 20 + 10, self.N*20+10 #Sets the initial x and y position for the East wall to start from the right
-        for i in range(1, self.N + 1):#Sets the number of walls in the right most column
+        #Draws the wall for the east boarder
+        for i in range(1, self.N + 1):#for i in 1 .. maze size with boarder
             if self.maze[self.N][i].checkEast():#Check if the East wall is standing. If true draw the East wall for the right most column
                 wall = (Line(Point(x, y), Point(x, y - 20))).draw(self.win)#Draws the East wall of one cell with the height of 20
             x, y = x, y - 20 #Sets the position for the East wall of the next cell
 
-        return self.x1,self.y1 #Return the coordinate of the starting point
+        return self.x1,self.y1 #Return the coordinate of the starting point for the Explore(self, x,y) method to use when finding the shortest path
 
     def drawDot(self,x,y,r,c):
         #Draw a point given coordinate on grid and radius and color
