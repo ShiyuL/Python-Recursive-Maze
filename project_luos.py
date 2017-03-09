@@ -170,32 +170,38 @@ class Maze:
 
 
     def Explore(self, x, y):
+        '''
+        This method uses Dijkstra’s algorithm  to generate the shortest path from the starting point to the key 
+        then finally to the ending point through the randomly generated maze to make sure the path is generated efficiently
+        and quickly without using up too much memory
+        x and y are the coordinates of the starting point
+        '''
+        #Generate the shortest path and draw the path to the key from the starting point
+        endX = self.x3;#endX: the x coordinate of the key that is randomly generated, x3: the x coordinate of the key
+        endY = self.y3;#endY: the y coordinate of the key that is randomly generated, y3: the y coordinate of the key
+        self.ExploreHelper(x, y, endX, endY)#use ExploreHelper to generate path to the key from the starting point
+        # draw the path from starting point to key
+        for i in range(len(self.stack2)):#for i from 0 to the length of the path to the key
+            dot=self.stack2[i]#get the x and y coordinte of the cell in the path
+            self.drawDot(dot[0],dot[1],5,"brown")#draw a dot to indicate the coordinate along with a radius of 5 and in brown color
         
-#use self.explore to go to the key from the starting point
-        endX = self.x3;
-        endY = self.y3;
-        self.ExploreHelper(x, y, endX, endY)
-        # draw dots from starting point to key
-        for i in range(len(self.stack2)):
-            dot=self.stack2[i]
-            self.drawDot(dot[0],dot[1],5,"brown")
-        #use self.explore to go to the ending point from the key
-        endX = self.x2
-        endY = self.y2
-        self.pathToVictory = self.stack2
-        self.stack2=[]#reinitialize stack 2
-        for i in range(1,self.N+1):
-            for j in range(1,self.N+1):
-                self.maze[i][j].unVisit()#Set all cells to unvisited
-        self.ExploreHelper(self.x3,self.y3,endX,endY)
-        self.stack2=self.stack2[1:len(self.stack2)]#To avoid repeating the starting point of key
-        # draw dots from key to ending point
-        for i in range(len(self.stack2)):
-            dot=self.stack2[i]
-            self.drawDot(dot[0],dot[1],3,"black")
-            self.pathToVictory.append(dot)
-        #print the exit path
-        print(self.pathToVictory)
+        #Generate the shortest path and draw the path from the key to the ending point
+        endX = self.x2#endX: the x coordinate of the ending point that is randomly generated
+        endY = self.y2#endY: the y coordinate of the ending that is randomly generated
+        self.pathToVictory = self.stack2#Add the path from the starting point to the key as first part of the shortest path through the maze
+        self.stack2=[]#reinitialize stack 2 to store the second part of the shortest path from the key to the ending point
+        #Set all the cells in the maze as unvisited
+        for i in range(1,self.N+1):#for i in 1 .. maze size with boarder
+            for j in range(1,self.N+1):#for j in 1 .. maze size with boarder
+                self.maze[i][j].unVisit()#Set cell to unvisited
+        self.ExploreHelper(self.x3,self.y3,endX,endY)#use ExploreHelper to generate path from the key to the ending point
+        self.stack2=self.stack2[1:len(self.stack2)]#To avoid repeating the starting point of key delete the first cell from the path
+        # draw the path from key to ending point
+        for i in range(len(self.stack2)):#for i from 0 to the length of the path to from the key to the ending point
+            dot=self.stack2[i]#get the x and y coordiante of the cell in the path
+            self.drawDot(dot[0],dot[1],3,"black")#draw a dot to indicate the coordinate along with a radius of 3 and in black color
+            self.pathToVictory.append(dot)#add the coordinate of the cell to the shortest path 
+        print(self.pathToVictory)#print the exit path from the starting point to the key and finally to the ending point
 
 
 
